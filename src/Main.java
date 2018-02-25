@@ -31,11 +31,13 @@ public class Main {
         System.out.println("a: " + a);
         System.out.println("b: " + b);
         System.out.println("c: " + c);
-        System.out.println("d: " + d);
-        System.out.println("---------------");*/
-        System.out.println("Comparison: " + combination);
+        System.out.println("d: " + d);*/
+        System.out.println("------------------------------");
+        System.out.println("Combination: " + combination);
+        System.out.println("Standard Deviation: " + distributionStandardDeviation(numberOfTrials, probabilityOfSuccess));
+        System.out.println("Mean: " + distributionMean(numberOfTrials, probabilityOfSuccess));
         System.out.println("Binomial Probability: " + binomial);
-
+        System.out.println("------------------------------");
 
     }
 
@@ -45,6 +47,16 @@ public class Main {
         long c = factorial(numberOfTrials-numberOfSuccesses);
         double result = a / (b * c);
         return result;
+    }
+
+    private static double distributionStandardDeviation(long numberOfTrials, double probabilityOfSuccess){
+        double probabilityOfFailure = 1 - probabilityOfSuccess;
+        double x = numberOfTrials * probabilityOfSuccess * probabilityOfFailure;
+        return Math.sqrt(x);
+    }
+
+    private static double distributionMean(long numberOfTrials, double probabilityOfSuccess){
+        return numberOfTrials*probabilityOfSuccess;
     }
 
     private static long factorial(long n) {
