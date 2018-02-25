@@ -1,3 +1,4 @@
+import java.math.BigDecimal;
 import java.util.Scanner;
 
 public class Main {
@@ -8,32 +9,33 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         double probabilityOfSuccess = Double.valueOf(scanner.next());
         System.out.println("Enter the number of trials (n): ");
-        long numberOfTrials = Integer.valueOf(scanner.next());
+        int numberOfTrials = Integer.valueOf(scanner.next());
         System.out.println("Enter the number of successes (x): ");
-        long numberOfSuccesses = Integer.valueOf(scanner.next());
+        int numberOfSuccesses = Integer.valueOf(scanner.next());
 
         // calculate the combinations
         // c(n,x) = n! / (x!(n-x)!)
-        double combination = combination(numberOfTrials, numberOfSuccesses);
+        BigDecimal combination = new BigDecimal(combination(numberOfTrials, numberOfSuccesses));
         // calculate the binomial probability
         // (1-π^n-x)
         double d = 1 - probabilityOfSuccess;
-        double e = Math.pow(probabilityOfSuccess,numberOfSuccesses);
-        long f = numberOfTrials - numberOfSuccesses;
-        double binomial = combination * e * Math.pow(d,f);
+        BigDecimal e = new BigDecimal(Math.pow(probabilityOfSuccess,numberOfSuccesses));
+        double f = numberOfTrials - numberOfSuccesses;
+        BigDecimal px = new BigDecimal(Math.pow(d,f));
+        BigDecimal binomial = combination.multiply(e).multiply(px);
 
         scanner.close();
 
-        /*System.out.println("π: " + probabilityOfSuccess);
+        System.out.println("π: " + probabilityOfSuccess);
         System.out.println("n: " + numberOfTrials);
         System.out.println("x: " + numberOfSuccesses);
         System.out.println("---------------");
-        System.out.println("a: " + a);
-        System.out.println("b: " + b);
-        System.out.println("c: " + c);
-        System.out.println("d: " + d);*/
+        System.out.println("d: " + d);
+        System.out.println("e: " + e);
+        System.out.println("f: " + f);
         System.out.println("------------------------------");
         System.out.println("Combination: " + combination);
+        System.out.println("P(x): " + px);
         System.out.println("Standard Deviation: " + distributionStandardDeviation(numberOfTrials, probabilityOfSuccess));
         System.out.println("Mean: " + distributionMean(numberOfTrials, probabilityOfSuccess));
         System.out.println("Binomial Probability: " + binomial);
@@ -41,26 +43,25 @@ public class Main {
 
     }
 
-    private static double combination(long numberOfTrials, long numberOfSuccesses){
-        long a = factorial(numberOfTrials);
-        long b = factorial(numberOfSuccesses);
-        long c = factorial(numberOfTrials-numberOfSuccesses);
-        double result = a / (b * c);
-        return result;
+    private static double combination(int numberOfTrials, int numberOfSuccesses){
+        double a = factorial(numberOfTrials);
+        double b = factorial(numberOfSuccesses);
+        double c = factorial(numberOfTrials-numberOfSuccesses);
+        return a / (b * c);
     }
 
-    private static double distributionStandardDeviation(long numberOfTrials, double probabilityOfSuccess){
+    private static BigDecimal distributionStandardDeviation(int numberOfTrials, double probabilityOfSuccess){
         double probabilityOfFailure = 1 - probabilityOfSuccess;
         double x = numberOfTrials * probabilityOfSuccess * probabilityOfFailure;
-        return Math.sqrt(x);
+        return new BigDecimal(Math.sqrt(x));
     }
 
-    private static double distributionMean(long numberOfTrials, double probabilityOfSuccess){
+    private static double distributionMean(int numberOfTrials, double probabilityOfSuccess){
         return numberOfTrials*probabilityOfSuccess;
     }
 
-    private static long factorial(long n) {
-        long result = 1;
+    private static double factorial(double n) {
+        double result = 1;
         for (int i = 1; i <= n; i++) {
             result = result * i;
         }
