@@ -13,33 +13,75 @@ public class Main {
         System.out.println("Enter the number of successes (x): ");
         int numberOfSuccesses = Integer.valueOf(scanner.next());
 
-        // calculate the combinations
-        // c(n,x) = n! / (x!(n-x)!)
-        BigDecimal combination = new BigDecimal(combination(numberOfTrials, numberOfSuccesses));
-        // calculate the binomial probability
-        // (1-π^n-x)
-        double d = 1 - probabilityOfSuccess;
-        BigDecimal e = new BigDecimal(Math.pow(probabilityOfSuccess,numberOfSuccesses));
-        double f = numberOfTrials - numberOfSuccesses;
-        BigDecimal px = new BigDecimal(Math.pow(d,f));
-        BigDecimal binomial = combination.multiply(e).multiply(px);
-
         scanner.close();
 
-        System.out.println("π: " + probabilityOfSuccess);
-        System.out.println("n: " + numberOfTrials);
-        System.out.println("x: " + numberOfSuccesses);
-        System.out.println("---------------");
-        System.out.println("d: " + d);
-        System.out.println("e: " + e);
-        System.out.println("f: " + f);
+
+        final Object[][] table = new String[numberOfSuccesses + 2][];
+        table[0] = new String[]{"#", "Combination", "π^x", "(1-π^n-x)", "Binomial Prob."};
+        BigDecimal sumBinomial = new BigDecimal(0);
+        for (int i = 0; i < numberOfSuccesses + 1; i++) {
+            // calculate the combinations
+            // c(n,x) = n! / (x!(n-x)!)
+            BigDecimal combination = new BigDecimal(combination(numberOfTrials, i));
+            // calculate the binomial probability
+            // (1-π^n-x)
+            double d = 1 - probabilityOfSuccess;
+            BigDecimal e = new BigDecimal(Math.pow(probabilityOfSuccess, i));
+            double f = numberOfTrials - i;
+            BigDecimal px = new BigDecimal(Math.pow(d, f));
+            BigDecimal binomial = combination.multiply(e).multiply(px);
+            sumBinomial = sumBinomial.add(binomial);
+            // convert the results to string
+            String displayCombination = String.valueOf(combination);
+            if (displayCombination.length() > 12) {
+                displayCombination = displayCombination.substring(0, 12);
+            }
+
+            String displayE = String.valueOf(e);
+            if (displayE.length() > 12) {
+                displayE = displayE.substring(0, 12);
+            }
+
+            String displayPx = String.valueOf(px);
+            if (displayPx.length() > 12) {
+                displayPx = displayPx.substring(0, 12);
+            }
+
+            String displayBinomial = String.valueOf(binomial);
+            if (displayBinomial.length() > 12) {
+                displayBinomial = displayBinomial.substring(0, 12);
+            }
+
+            table[i + 1] = new String[]{
+                    String.valueOf(i),
+                    displayCombination,
+                    displayE,
+                    displayPx,
+                    displayBinomial
+            };
+
+
+        }
+
         System.out.println("------------------------------");
-        System.out.println("Combination: " + combination);
-        System.out.println("P(x): " + px);
-        System.out.println("Standard Deviation: " + distributionStandardDeviation(numberOfTrials, probabilityOfSuccess));
+        for (final Object[] row : table) {
+            System.out.format("%-15s%-15s%-15s%-15s%-15s\n", row);
+        }
+        System.out.println("------------------------------");
+
+        String displaySD = String.valueOf(distributionStandardDeviation(numberOfTrials, probabilityOfSuccess));
+        if ( displaySD.length() > 12){
+            displaySD = displaySD.substring(0,12);
+        }
+
+        String displaySumBinomial = String.valueOf(sumBinomial);
+        if ( displaySumBinomial.length() > 12){
+            displaySumBinomial = displaySumBinomial.substring(0,12);
+        }
+
+        System.out.println("Sum Binomial: " + displaySumBinomial);
+        System.out.println("Standard Deviation: " + displaySD);
         System.out.println("Mean: " + distributionMean(numberOfTrials, probabilityOfSuccess));
-        System.out.println("Binomial Probability: " + binomial);
-        System.out.println("------------------------------");
 
     }
 
