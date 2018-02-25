@@ -15,7 +15,6 @@ public class Main {
 
         scanner.close();
 
-
         final Object[][] table = new String[numberOfSuccesses + 2][];
         table[0] = new String[]{"#", "Combination", "π^x", "(1-π^n-x)", "Binomial Prob."};
         BigDecimal sumBinomial = new BigDecimal(0);
@@ -32,25 +31,10 @@ public class Main {
             BigDecimal binomial = combination.multiply(e).multiply(px);
             sumBinomial = sumBinomial.add(binomial);
             // convert the results to string
-            String displayCombination = String.valueOf(combination);
-            if (displayCombination.length() > 12) {
-                displayCombination = displayCombination.substring(0, 12);
-            }
-
-            String displayE = String.valueOf(e);
-            if (displayE.length() > 12) {
-                displayE = displayE.substring(0, 12);
-            }
-
-            String displayPx = String.valueOf(px);
-            if (displayPx.length() > 12) {
-                displayPx = displayPx.substring(0, 12);
-            }
-
-            String displayBinomial = String.valueOf(binomial);
-            if (displayBinomial.length() > 12) {
-                displayBinomial = displayBinomial.substring(0, 12);
-            }
+            String displayCombination = displayResult(String.valueOf(combination),12);
+            String displayE = displayResult(String.valueOf(e),12);
+            String displayPx = displayResult(String.valueOf(px),12);
+            String displayBinomial = displayResult(String.valueOf(binomial),12);
 
             table[i + 1] = new String[]{
                     String.valueOf(i),
@@ -59,30 +43,29 @@ public class Main {
                     displayPx,
                     displayBinomial
             };
-
-
         }
+        String displaySD = displayResult(
+                String.valueOf(distributionStandardDeviation(numberOfTrials, probabilityOfSuccess)),
+                12);
+        String displaySumBinomial = displayResult(String.valueOf(sumBinomial),12);
 
         System.out.println("------------------------------");
         for (final Object[] row : table) {
             System.out.format("%-15s%-15s%-15s%-15s%-15s\n", row);
         }
         System.out.println("------------------------------");
-
-        String displaySD = String.valueOf(distributionStandardDeviation(numberOfTrials, probabilityOfSuccess));
-        if ( displaySD.length() > 12){
-            displaySD = displaySD.substring(0,12);
-        }
-
-        String displaySumBinomial = String.valueOf(sumBinomial);
-        if ( displaySumBinomial.length() > 12){
-            displaySumBinomial = displaySumBinomial.substring(0,12);
-        }
-
         System.out.println("Sum Binomial: " + displaySumBinomial);
         System.out.println("Standard Deviation: " + displaySD);
         System.out.println("Mean: " + distributionMean(numberOfTrials, probabilityOfSuccess));
 
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private static String displayResult(String r, int length){
+        if (r.length() > length) {
+            r = r.substring(0, 12);
+        }
+        return r;
     }
 
     private static double combination(int numberOfTrials, int numberOfSuccesses){
